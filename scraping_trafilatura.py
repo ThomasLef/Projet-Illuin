@@ -75,4 +75,4 @@ def get_links(link):
     print(feedlist)
     return(feedlist)
 
-get_links('https://wiki.ubuntu.com/')
+get_links('https://www.nbcnews.com/western-wildfires')
