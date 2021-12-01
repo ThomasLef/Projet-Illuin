@@ -1,4 +1,5 @@
 import trafilatura
+from trafilatura import feeds
 import matplotlib.pyplot as plt
 
 # print(absice)
@@ -69,5 +70,9 @@ def main():
     plt.plot(liste1, liste3)
     plt.show()
 
+def get_links(link):
+    feedlist = feeds.find_feed_urls(link)
+    print(feedlist)
+    return(feedlist)
 
-main()
+get_links('https://wiki.ubuntu.com/')
