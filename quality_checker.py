@@ -45,5 +45,6 @@ def relevance_checker(article, keywords, precision_key, precision_words):
         return False
     return True
 
-def source_checker(source_code):
-    pass
+def source_checker(list_sources, precision_source):
+    if len(list_sources) < precision_source:
+        return False
