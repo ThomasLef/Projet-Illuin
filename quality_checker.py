@@ -1,7 +1,6 @@
 import spacy
 import datetime
 import dateparser
-from thinc.types import Fal
 
 nlp = spacy.load('en_core_web_sm')
 
