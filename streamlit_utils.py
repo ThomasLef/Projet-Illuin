@@ -83,7 +83,7 @@ def get_lists_from_subject(subject, num_pages,date_limits = None):
             link = a['href']
             link_list.append(link)
 
-            date = g_card.find("span").text
+            date = g_card.find_all("span")[-1].text
             translated_date = translator.translate(date)
             date_list.append(cal.parseDT(translated_date, now)[0].date())
 
