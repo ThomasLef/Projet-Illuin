@@ -1,4 +1,7 @@
 import json
+from matplotlib.pyplot import savefig
+
+from numpy import save
 
 def __main__():
 
@@ -8,27 +11,68 @@ def __main__():
 
     final_list = []
     # for file_num in range(nombre_articles):
-    with open('./annotations/article_number_0.json', 'r') as json_file:
+    with open('./annotations/article_number_0.json', 'r', encoding="utf8") as json_file:
         data = json.load(json_file)
         whole_text = data['rawString']
         whole_text_modified = ""
         char_added = []
+        saved_char = ""
         for i in range(len(whole_text)):
             char = whole_text[i]
-            if char in [",","-","\'",".","\n"]:
-                if i == (len(whole_text) - 1):
-                    whole_text_modified += " " + char
-                    char_added.append((i,1))
-                elif (whole_text[i - 1] != " " and whole_text[i + 1] != " "):
-                    whole_text_modified += " " + char + " "
+
+            if i == (len(whole_text) - 1):
+                if char in [",","-","\'",".","/",":","&","’"]:
+                    whole_text_modified += " " + saved_char + char
+                    char_added.append((i, 1))
+                elif saved_char != "":
+                    whole_text_modified += " " + saved_char + " " + char
                     char_added.append((i,2))
-                elif not (whole_text[i - 1] == " " and whole_text[i + 1] == " "):
-                    whole_text_modified += " " + char + " "
-                    char_added.append((i,1))
                 else:
                     whole_text_modified += char
+
+            elif char in [",","-","\'",".","/",":","&","’"]:
+                if saved_char == "":
+                    saved_char = char
+                else:
+                    saved_char += char
+            
+            elif char in ["\"","“","”"]:
+                if saved_char != "" and saved_char[-1] == ",": #Cas où les guillemets doivent être considérés comme des caractères spéciaux
+                    saved_char += char
+                else:  #Cas où les guillemets doivent etre considérés comme des mots
+                    if saved_char != "":
+                        if (whole_text[i - len(saved_char) - 1] != " " and whole_text[i + 1] != " "): #Ex : bla-"bla => bla - " bla
+                            whole_text_modified += " " + saved_char + " " + char + " "
+                            char_added.append((i - len(saved_char), 2))
+                            char_added.append((i, 1))
+                            saved_char = ""
+                        else: #Ex : bla -"bla => bla - " bla
+                            whole_text_modified += " " + saved_char + " " + char + " "
+                            char_added.append((i - len(saved_char),1))
+                            char_added.append((i,1))
+                            saved_char = ""
+                    else:
+                        whole_text_modified += " " + char + " "
+                        if whole_text[i -1] != " " and whole_text[i + 1] != " ":
+                            char_added.append((i,2))
+                        elif not (whole_text[i - 1] == " " and whole_text[i + 1] == " "):
+                            char_added.append((i,1))
+            
             else:
-                whole_text_modified += char
+                if saved_char != "":
+                    if (whole_text[i - len(saved_char) - 1] != " " and char != " "):
+                        whole_text_modified += " " + saved_char + " " + char
+                        char_added.append((i - len(saved_char),2))
+                        saved_char = ""
+                    elif not (whole_text[i - len(saved_char) - 1] == " " and char == " "):
+                        whole_text_modified += " " + saved_char + " " + char
+                        char_added.append((i - len(saved_char),1))
+                        saved_char = ""
+                    else:
+                        whole_text_modified += saved_char + char
+                        saved_char = ""
+                else:
+                    whole_text_modified += char
 
         whole_text_list = whole_text_modified.split()
 
@@ -41,22 +85,19 @@ def __main__():
                 word = data['tokenized'][word_id]['word']
                 annotation.append(word)
 
-            list_position = range(int(0.9*tag['begin']), int(min(1.1*tag['end'] +1, len(whole_text_list)))) #Position possible of the first word, between tag[begin] +- 10%
-            for index in list_position:
-                extrait = [whole_text_list[i] for i in range(index, index + len(annotation))]
-                if (extrait == annotation):
+            index = tag['begin']
+            extrait = [whole_text_list[i] for i in range(index, index + len(annotation))]
 
-                    fst_char_index = count_char(whole_text_list, index)
+            fst_char_index = count_char(whole_text_list, index)
 
-                    lst_char_index = fst_char_index + count_char(annotation, len(annotation)) - 1
+            lst_char_index = fst_char_index + count_char(annotation, len(annotation)) - 1
 
-                    fst_char_add = nb_add_char(char_added, fst_char_index)
-                    fst_char_index -= fst_char_add
-                    lst_char_add = nb_add_char(char_added, lst_char_index)
-                    lst_char_index -= lst_char_add
+            fst_char_add = nb_add_char(char_added, fst_char_index)
+            fst_char_index -= fst_char_add
+            lst_char_add = nb_add_char(char_added, lst_char_index)
+            lst_char_index -= lst_char_add
 
-                    print((extrait,[whole_text[fst_char_index:lst_char_index]]))
-                    break
+            print((extrait,[whole_text[fst_char_index:lst_char_index]]))
             
             annotated_list.append((fst_char_index, lst_char_index, traduction_dict[tag['tag']]))
 
@@ -81,10 +122,10 @@ def count_char(list_word, index):
 def nb_add_char(added, index):
     c = 0
     for i in added:
-        if i[0] < index:
+        if i[0] <= index:
             c += i[1]
         else:
             break
     return c
 
-print(__main__())
+__main__()
