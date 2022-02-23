@@ -62,7 +62,7 @@ def get_lists_from_subject(subject, num_pages,date_limits = None):
     else:   
         driver.get("https://www.google.com/search?q="+subject+"&rlz=1C1CHBF_frFR863FR863&biw=1920&bih=880&sxsrf=AOaemvI0XcPZB9YWw9GUVGwWTEXPDVqRxQ:1638967714934&source=lnms&tbm=nws&sa=X&ved=2ahUKEwjGlsnDntT0AhWTTcAKHeyuDk4Q_AUoAXoECAEQAw")
 
-    driver.find_element(By.XPATH, "//button[@class='VfPpkd-LgbsSe VfPpkd-LgbsSe-OWXEXe-k8QpJ VfPpkd-LgbsSe-OWXEXe-dgl2Hf nCP5yc AjY5Oe DuMIQc']").click() #accept google policy
+    driver.find_element(By.XPATH, "//button[@class='VfPpkd-LgbsSe VfPpkd-LgbsSe-OWXEXe-k8QpJ VfPpkd-LgbsSe-OWXEXe-dgl2Hf nCP5yc AjY5Oe DuMIQc qfvgSe']").click() #accept google policy
 
     for i in range(num_pages):
         if i != 0:
@@ -83,7 +83,7 @@ def get_lists_from_subject(subject, num_pages,date_limits = None):
             link = a['href']
             link_list.append(link)
 
-            date = g_card.find("p").text
+            date = g_card.find("span").text
             translated_date = translator.translate(date)
             date_list.append(cal.parseDT(translated_date, now)[0].date())
 
