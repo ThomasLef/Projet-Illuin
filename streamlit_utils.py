@@ -38,60 +38,87 @@ import plotly.express as px
 NLP_SENTENCES = English()
 NLP_SENTENCES.add_pipe('sentencizer') 
 
-
-#Scraping NBC news wild fires with Selenium and Beautifulsoup
+#Scraping Google news with Selenium and Beautifulsoup
 def get_lists_from_subject(subject, num_pages,date_limits = None):
 
-    translator = GoogleTranslator(source='fr', target='en')
-    
-    cal = pdt.Calendar()
-    now = datetime.now()
+    restart = True
+    problem = False
 
-    PATH = "./chromedriver_win32/chromedriver.exe"
+    problem_count = 0
 
-    s=Service(PATH)
-    driver = webdriver.Chrome(service=s)
+    max_problem_count = 10
 
-    link_list = []
-    date_list = []
-    if date_limits is not None:
-        lower_date, higher_date = date_limits
-        ld, lm, ly = str(lower_date.day), str(lower_date.month), str(lower_date.year)
-        hd, hm, hy = str(higher_date.day), str(higher_date.month), str(higher_date.year)
-        driver.get("https://www.google.com/search?q="+subject+"&rlz=1C1CHBF_frFR863FR863&biw=1920&bih=880&sxsrf=APq-WBuYthkpiHNrhk_0YwH1w70zP27Xgg%3A1643812260630&source=lnt&tbs=cdr%3A1%2Ccd_min%3A"+lm+"%2F"+ld+"%2F"+ly+"%2Ccd_max%3A"+hm+"%2F"+hd+"%2F"+hy+"&tbm=nws")
-    else:   
-        driver.get("https://www.google.com/search?q="+subject+"&rlz=1C1CHBF_frFR863FR863&biw=1920&bih=880&sxsrf=AOaemvI0XcPZB9YWw9GUVGwWTEXPDVqRxQ:1638967714934&source=lnms&tbm=nws&sa=X&ved=2ahUKEwjGlsnDntT0AhWTTcAKHeyuDk4Q_AUoAXoECAEQAw")
+    while restart and problem_count < max_problem_count:
 
-    driver.find_element(By.XPATH, "//button[@class='VfPpkd-LgbsSe VfPpkd-LgbsSe-OWXEXe-k8QpJ VfPpkd-LgbsSe-OWXEXe-dgl2Hf nCP5yc AjY5Oe DuMIQc qfvgSe']").click() #accept google policy
+        translator = GoogleTranslator(source='fr', target='en')
+        
+        cal = pdt.Calendar()
+        now = datetime.now()
 
-    for i in range(num_pages):
-        if i != 0:
-            try :
-                driver.find_element(By.ID, "pnnext").click()
-            except :
+        PATH = "./chromedriver_win32/chromedriver.exe"
+
+        s=Service(PATH)
+        driver = webdriver.Chrome(service=s)
+
+        link_list = []
+        date_list = []
+        if date_limits is not None:
+            lower_date, higher_date = date_limits
+            ld, lm, ly = str(lower_date.day), str(lower_date.month), str(lower_date.year)
+            hd, hm, hy = str(higher_date.day), str(higher_date.month), str(higher_date.year)
+            driver.get("https://www.google.com/search?q="+subject+"&rlz=1C1CHBF_frFR863FR863&biw=1920&bih=880&sxsrf=APq-WBuYthkpiHNrhk_0YwH1w70zP27Xgg%3A1643812260630&source=lnt&tbs=cdr%3A1%2Ccd_min%3A"+lm+"%2F"+ld+"%2F"+ly+"%2Ccd_max%3A"+hm+"%2F"+hd+"%2F"+hy+"&tbm=nws&hl=en")
+        else:   
+            driver.get("https://www.google.com/search?q="+subject+"&rlz=1C1CHBF_frFR863FR863&biw=1920&bih=880&sxsrf=AOaemvI0XcPZB9YWw9GUVGwWTEXPDVqRxQ:1638967714934&source=lnms&tbm=nws&sa=X&ved=2ahUKEwjGlsnDntT0AhWTTcAKHeyuDk4Q_AUoAXoECAEQAw&hl=en")
+
+        driver.find_element(By.XPATH, "//button[@class='VfPpkd-LgbsSe VfPpkd-LgbsSe-OWXEXe-k8QpJ VfPpkd-LgbsSe-OWXEXe-dgl2Hf nCP5yc AjY5Oe DuMIQc qfvgSe']").click() #accept google policy
+
+        for i in range(num_pages):
+            if i != 0:
+                try :
+                    driver.find_element(By.ID, "pnnext").click()
+                except :
+                    break
+
+            html_source = driver.page_source
+
+            soup = BeautifulSoup(html_source, 'lxml')
+
+            #Getting all g-card 
+            g_card_list = soup.find_all("g-card")
+
+            if g_card_list == []:
+                driver.quit()
+                problem = True
+                problem_count += 1
                 break
+            else :
+                problem = False
 
-        html_source = driver.page_source
+            for g_card in g_card_list:
+                a = g_card.find("a")
+                link = a['href']
+                link_list.append(link)
 
-        soup = BeautifulSoup(html_source, 'lxml')
+                date = g_card.find_all("span")[-1].text
+                translated_date = translator.translate(date)
+                date_list.append(cal.parseDT(translated_date, now)[0].date())
 
-        #Getting all g-card 
-        g_card_list = soup.find_all("g-card")
 
-        for g_card in g_card_list:
-            a = g_card.find("a")
-            link = a['href']
-            link_list.append(link)
+        if problem :
+            restart = True
+        else:
+            driver.quit()
+            restart = False
+    if not problem:
+        print("Successfully scraped : ", len(link_list), " links")
 
-            date = g_card.find_all("span")[-1].text
-            translated_date = translator.translate(date)
-            date_list.append(cal.parseDT(translated_date, now)[0].date())
-
-    driver.quit()
-
-    print("Successfully scraped : ", len(link_list), " links")
+    else:
+        print("Problem occured during scraping")
 
     return link_list, date_list
+
+
+
 
 
 
@@ -205,10 +232,11 @@ def get_locations_df_from_subject(subject, num_pages, date_limits = None):
     df = df.dropna() #Drop missing values
     df = df.reset_index(drop=True)
     print(f'There are {len(df.index)} usable articles')
-    df["Content"] = df["Content"].apply(clean) #cleaning contents
-    df = df.rename(columns={"Content":"Clean_content"})
-    df["Sentences"] = df["Clean_content"].apply(sentences) #getting sentences list
-    df = add_location_col_in_df(df) #adding locations
+    if "Content" in df.columns:
+        df["Content"] = df["Content"].apply(clean) #cleaning contents
+        df = df.rename(columns={"Content":"Clean_content"})
+        df["Sentences"] = df["Clean_content"].apply(sentences) #getting sentences list
+        df = add_location_col_in_df(df) #adding locations
     return df
 
 
@@ -220,7 +248,7 @@ def get_location_map_from_df(df, map_style = None):
     d = {}
 
     locator = geopy.geocoders.Nominatim(user_agent='mygeocoder')
-    geocode = RateLimiter(locator.geocode,min_delay_seconds=1)
+    geocode = RateLimiter(locator.geocode,min_delay_seconds=0.5)
     lattitudes = []
     longitudes = []
     for loc in locations :
@@ -258,16 +286,12 @@ def plot_articles_per_date(df_location):
     min_date = min(dates)
     max_date = max(dates)
     dateList = []
-    for x in range (0, (max_date-min_date).days):
+    for x in range (0, (max_date-min_date).days + 1):
         dateList.append(min_date + timedelta(days = x))
     countList = [0 for i in range(len(dateList))]
     for i in range(len(dateList)):
         if dateList[i] in dates:
             countList[i] = count[dates.index(dateList[i])]
-    while countList[-1] == 0:
-        countList.pop()
-        dateList.pop()
-
     df_temp = pd.DataFrame({"Date" : dateList, "Count": countList})
     return px.line(df_temp, x= "Date", y = "Count", title = "Number of scraped articles per date")
     
