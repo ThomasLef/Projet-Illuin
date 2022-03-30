@@ -3,6 +3,7 @@ import streamlit.components.v1 as components
 import re
 
 from streamlit_utils import *
+from streamlit_pytrends import *
 
 if "display" not in st.session_state:
     st.session_state.display = False
@@ -25,6 +26,18 @@ if "show_plot_articles_per_date" not in st.session_state:
 if "show_map" not in st.session_state:
     st.session_state.show_map = False
 
+if "display_trends" not in st.session_state:
+    st.session_state.display_trends = False
+
+if "pytrends" not in st.session_state:
+    st.session_state.pytrends = None
+
+if "trend" not in st.session_state:
+    st.session_state.trend = None
+
+if "fft" not in st.session_state:
+    st.session_state.fft = None
+
 st.sidebar.title("Climate change scraping dashboard")
 
 st.sidebar.image("https://www.pressonline.com/illuin-technology/files/2019/08/xlogo-illuin-technology.png.pagespeed.ic.P4glNQKPUa.png")
@@ -46,6 +59,15 @@ def show_results():
             st.session_state.html_map = get_map_as_html(st.session_state.df_location)
     except :
         st.write("Scraping failed")
+
+def show_trends():
+    st.session_state.display_trends = True
+    update_trends()
+    st.session_state.trend = trend_fig(st.session_state.pytrends, topic)
+    st.session_state.fft = fft_fig(freq_pos(st.session_state.pytrends))
+
+def update_trends():
+    st.session_state.pytrends = init_pytrends(topic, nb_years)
 
 def get_map_as_html(df_location):
     folium_map = get_location_map_from_df(df_location, map_style="heatmap")
@@ -114,5 +136,22 @@ if search_type == SEARCH_TYPE[0]: #Scraping
     
 if search_type == SEARCH_TYPE[1] : #Pytrend
 
-    st.write("coucou")
+    with st.form("Paramètre de scraping"):
         
+        topic = st.text_input("Mot clé de la recherche : ")
+
+        nb_years = int(st.number_input("Nombres d'années à analyser :", step = 1,min_value = 1))
+
+        if st.form_submit_button("Appliquer les modifications"):
+            st.write("Changements pris en compte.")
+        
+    st.button("Lancer l'analyse des trends", on_click = show_trends)
+
+    if st.session_state.display_trends and st.session_state.pytrends is not None:
+
+
+        st.plotly_chart(trend, use_container_width=True)
+
+
+        st.plotly_chart(fft, use_container_width=True)
+    
