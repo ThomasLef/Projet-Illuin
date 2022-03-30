@@ -62,9 +62,12 @@ def show_results():
 
 def show_trends():
     st.session_state.display_trends = True
-    update_trends()
-    st.session_state.trend = trend_fig(st.session_state.pytrends, topic)
-    st.session_state.fft = fft_fig(freq_pos(st.session_state.pytrends))
+    try :
+        update_trends()
+        st.session_state.trend = trend_fig(st.session_state.pytrends, topic)
+        st.session_state.fft = fft_fig(freq_pos(st.session_state.pytrends))
+    except :
+        st.write("Too much API calls to Google, please wait an retry.")
 
 def update_trends():
     st.session_state.pytrends = init_pytrends(topic, nb_years)
