@@ -1,7 +1,7 @@
 from pytrends.request import TrendReq
 import plotly.express as px
 import plotly.tools as tls
-
+import pandas as pd
 import matplotlib.pyplot as plt
 import numpy as np
 from PIL import Image
@@ -37,27 +37,29 @@ def couleur(*args, **kwargs):
 
 
 
-def freq_pos(pytrends):
+def freq_pos(pytrends, topic, nb_years):
+    data = pytrends.interest_over_time() 
+    data = data.reset_index() 
     X = fft(data[topic])  # Transformée de fourier
-    freq = fftfreq(x.size, d=1/(len(data)))  # Fréquences de la transformée de Fourier
+    freq = fftfreq(X.size, d=1/(len(data)))  # Fréquences de la transformée de Fourier
     # Calcul du nombre d'échantillon
-    N = x.size
+    N = X.size
     # On prend la valeur absolue de l'amplitude uniquement pour les fréquences positives et normalisation
     X_abs = np.abs(X[:N//2])*2.0/N
     # On garde uniquement les fréquences positives
     freq_pos = freq[:N//2]/nb_years
-    return freq_pos
+    return freq_pos, X_abs
 
-def fft_fig(freq_pos): #Modifier cette fonction pour retourner une figure plotly
-    fig = plt.figure()
-    fig.plot(freq_pos[1:], X_abs[1:], label="Amplitude absolue")
-    fig.xlim(0, 12)  
-    fig.grid()
-    fig.xlabel(r"Frequency (Peaks/Year)")
-    fig.ylabel(r"Amplitude $|X(f)|$")
-    fig.title("Frequency analysis")
+def fft_fig(freq_pos, X_abs):
+
+   
+    d = {"Frequency (Peaks/Year)": freq_pos[1:],
+         r"Amplitude |X(f)|" : X_abs[1:]}
     
-    return tls.mpl_to_plotly(fig)
+    df = pd.DataFrame(d)
+    
+    fig = px.line(df, x="Frequency (Peaks/Year)", y=r"Amplitude |X(f)|", title='Frequency analysis')
+    return fig
     
 def nb_peaks_per_year(freq_pos):
     return freq_pos[np.argmax(X_abs[1:]) + 1]

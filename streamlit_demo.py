@@ -58,16 +58,17 @@ def show_results():
         if st.session_state.show_map:
             st.session_state.html_map = get_map_as_html(st.session_state.df_location)
     except :
-        st.write("Scraping failed")
+        pass
 
 def show_trends():
     st.session_state.display_trends = True
     try :
         update_trends()
-        st.session_state.trend = trend_fig(st.session_state.pytrends, topic)
-        st.session_state.fft = fft_fig(freq_pos(st.session_state.pytrends))
-    except :
-        st.write("Too much API calls to Google, please wait an retry.")
+    except:
+        pass
+    st.session_state.trend = trend_fig(st.session_state.pytrends, topic)
+    st.session_state.fft = fft_fig(*freq_pos(st.session_state.pytrends, topic, nb_years))
+        
 
 def update_trends():
     st.session_state.pytrends = init_pytrends(topic, nb_years)
@@ -153,8 +154,8 @@ if search_type == SEARCH_TYPE[1] : #Pytrend
     if st.session_state.display_trends and st.session_state.pytrends is not None:
 
 
-        st.plotly_chart(trend, use_container_width=True)
+        st.plotly_chart(st.session_state.trend, use_container_width=True)
 
 
-        st.plotly_chart(fft, use_container_width=True)
+        st.plotly_chart(st.session_state.fft, use_container_width=True)
     
