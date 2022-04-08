@@ -210,9 +210,10 @@ def clean(text):
 
     return text
     
-def get_df_relevant(df):
-    df["Relevance"] = df["Content"].apply(lambda x: classify_relevance(x))
+def get_df_relevant(df, model, tokenizer):
+    df["Relevance"] = df["Content"].apply(lambda x: classify_relevance(x, model, tokenizer))
     df = df[df["Relevance"] == 1]
+    df = df.drop(columns = ["Relevance"]).reset_index(drop=True)
     return df
 
 def sentences(text):
@@ -241,14 +242,14 @@ def add_location_col_in_df(df):
     return df
 
 
-def get_locations_df_from_subject(subject, num_pages, date_limits = None):
+def get_locations_df_from_subject(subject, num_pages, model, tokenizer, date_limits = None):
     df = get_df_from_subject(subject,num_pages, date_limits) #DF from scraping
     print("Done scraping")
     #df = get_rid_of_date(df) #No date
     df = df.dropna() #Drop missing values
     df = df.reset_index(drop=True)
     print(f'There are {len(df.index)} usable articles')
-    df = get_df_relevant(df) #Add relevance
+    df = get_df_relevant(df, model, tokenizer) #Add relevance
     print(f'There are {len(df.index)} relevant articles')
     if "Content" in df.columns:
         df["Content"] = df["Content"].apply(clean) #cleaning contents

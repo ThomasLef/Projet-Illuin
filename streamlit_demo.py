@@ -44,6 +44,12 @@ if "nb_ppy" not in st.session_state:
 if "peak_m" not in st.session_state:
     st.session_state.peak_m = None
 
+if "tokenizer" not in st.session_state:
+    st.session_state.tokenizer = None
+
+if "model" not in st.session_state:
+    st.session_state.model = None
+
 st.sidebar.title("Climate change scraping dashboard")
 
 st.sidebar.image("https://www.pressonline.com/illuin-technology/files/2019/08/xlogo-illuin-technology.png.pagespeed.ic.P4glNQKPUa.png")
@@ -89,9 +95,15 @@ def get_map_as_html(df_location):
     return source_code
 
 def update_df():
-    st.session_state.df_location = get_locations_df_from_subject(subject, num_pages, (start_date,end_date))
+    st.session_state.df_location = get_locations_df_from_subject(subject, num_pages, st.session_state.model, st.session_state.tokenizer, (start_date,end_date))
+    st.write("done")
 
+def load_model_tokenizer():
+    st.session_state.tokenizer = LongformerTokenizer.from_pretrained("allenai/longformer-base-4096")
+    st.session_state.model = torch.load('model/longformer_finetuned').to('cpu')
 
+if st.session_state.tokenizer is None or st.session_state.model is None:
+    load_model_tokenizer()
 
 SEARCH_TYPE = ["Scraping Google News", "Times series Pytrend"]
 
@@ -132,6 +144,7 @@ if search_type == SEARCH_TYPE[0]: #Scraping
 
     st.button("Lancer le scraping", on_click = show_results)
 
+    
 
     if st.session_state.display:
         
