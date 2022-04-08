@@ -35,8 +35,22 @@ import parsedatetime as pdt
 
 import plotly.express as px
 
+from transformers import BertForSequenceClassification, LongformerTokenizer, LongformerForSequenceClassification
+from torch import nn
+import torch
+
 NLP_SENTENCES = English()
 NLP_SENTENCES.add_pipe('sentencizer') 
+
+def classify_relevance(article, model, tokenizer):
+    #Article is a string, containing the text of the article
+    #Model is the Neural Network Classifier, a longformer in our case
+    #Tokenizer is the tokenizer that converts the article into a valid input for the model
+    token_article = tokenizer(article, padding='max_length', max_length = 512, truncation=True, return_tensors="pt")
+    mask = token_article['attention_mask']
+    input_id = token_article['input_ids']
+    output = model(input_id, mask).logits.argmax(dim=1).item()
+    return output
 
 #Scraping Google news with Selenium and Beautifulsoup
 def get_lists_from_subject(subject, num_pages,date_limits = None):
@@ -196,8 +210,10 @@ def clean(text):
 
     return text
     
-
-
+def get_df_relevant(df):
+    df["Relevance"] = df["Content"].apply(lambda x: classify_relevance(x))
+    df = df[df["Relevance"] == 1]
+    return df
 
 def sentences(text):
     # split sentences and questions
@@ -232,6 +248,8 @@ def get_locations_df_from_subject(subject, num_pages, date_limits = None):
     df = df.dropna() #Drop missing values
     df = df.reset_index(drop=True)
     print(f'There are {len(df.index)} usable articles')
+    df = get_df_relevant(df) #Add relevance
+    print(f'There are {len(df.index)} relevant articles')
     if "Content" in df.columns:
         df["Content"] = df["Content"].apply(clean) #cleaning contents
         df = df.rename(columns={"Content":"Clean_content"})

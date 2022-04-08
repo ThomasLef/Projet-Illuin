@@ -61,12 +61,11 @@ def fft_fig(freq_pos, X_abs):
     fig = px.line(df, x="Frequency (Peaks/Year)", y=r"Amplitude |X(f)|", title='Frequency analysis')
     return fig
     
-def nb_peaks_per_year(freq_pos):
+def nb_peaks_per_year(freq_pos, X_abs):
     return freq_pos[np.argmax(X_abs[1:]) + 1]
 
-def peak_month(topic, nb_years):
+def peak_month(pytrends, topic):
     months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-    pytrends = init_pytrends(topic, nb_years)
     data = pytrends.interest_over_time() 
     data = data.reset_index() 
     no1_month = mode(data[data[topic] > np.quantile(data[topic].values, 0.9)].date.apply(lambda x : x.month).values)

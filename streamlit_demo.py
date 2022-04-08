@@ -38,6 +38,12 @@ if "trend" not in st.session_state:
 if "fft" not in st.session_state:
     st.session_state.fft = None
 
+if "nb_ppy" not in st.session_state:
+    st.session_state.nb_ppy = None
+
+if "peak_m" not in st.session_state:
+    st.session_state.peak_m = None
+
 st.sidebar.title("Climate change scraping dashboard")
 
 st.sidebar.image("https://www.pressonline.com/illuin-technology/files/2019/08/xlogo-illuin-technology.png.pagespeed.ic.P4glNQKPUa.png")
@@ -68,7 +74,9 @@ def show_trends():
         pass
     st.session_state.trend = trend_fig(st.session_state.pytrends, topic)
     st.session_state.fft = fft_fig(*freq_pos(st.session_state.pytrends, topic, nb_years))
-        
+    st.session_state.nb_ppy = nb_peaks_per_year(*freq_pos(st.session_state.pytrends, topic, nb_years))
+    st.session_state.peak_m = peak_month(st.session_state.pytrends, topic)
+
 
 def update_trends():
     st.session_state.pytrends = init_pytrends(topic, nb_years)
@@ -158,4 +166,8 @@ if search_type == SEARCH_TYPE[1] : #Pytrend
 
 
         st.plotly_chart(st.session_state.fft, use_container_width=True)
+
+        st.write(f"nb_peaks_per_year = {st.session_state.nb_ppy}")
+
+        st.write(f"peak_month = {st.session_state.peak_m}")
     
