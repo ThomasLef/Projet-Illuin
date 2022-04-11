@@ -2,7 +2,7 @@
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/) 
 [![Open in Visual Studio Code](https://img.shields.io/badge/Editor-VSCode-blue?style=flat-square&logo=visual-studio-code&logoColor=white)](https://github.dev/ThomasLef/Projet-Illuin) 
 
-Infonum project at CentraleSupélec in collaboration with Illuin Technology.
+Projet de dominante Infonum CentraleSupélec en collaboration avec Illuin Technology.
 ## Installation
 ### Download requirements and model
 
