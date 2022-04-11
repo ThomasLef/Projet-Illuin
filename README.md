@@ -1,6 +1,6 @@
 # DeepCV-project
 [![made-with-python](https://img.shields.io/badge/Made%20with-Python-1f425f.svg)](https://www.python.org/) 
-[![Open in Visual Studio Code](https://img.shields.io/badge/Editor-VSCode-blue?style=flat-square&logo=visual-studio-code&logoColor=white)](https://github.dev/ArianeDlns/DeepCV-project/tree/main) [![GitHub commit](https://badgen.net/github/last-commit/ArianeDlns/chatbot-presidentielle2022/main)](https://GitHub.com/ArianeDlns/DeepCV-project/issues/) [![Report](https://img.shields.io/badge/Report-1.0-green?style=square&logo=overleaf&logoColor=white)](https://fr.overleaf.com/project/61aa186569ec83f4fb2a78b0)
+[![Open in Visual Studio Code](https://img.shields.io/badge/Editor-VSCode-blue?style=flat-square&logo=visual-studio-code&logoColor=white)](https://github.dev/ThomasLef/Projet-Illuin) 
 
 Infonum project at CentraleSupélec in collaboration with Illuin Technology.
 ## Installation
