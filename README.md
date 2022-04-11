@@ -24,18 +24,10 @@ streamlit run streamlit_demo.py
 
 ## :package: Structure
 ```bash
+C:.
 │   .gitignore
-│   articles_timeseries.ipynb
-│   BERT_QA.ipynb
-│   classify_relevance.ipynb
-│   fine_tuning_NER.ipynb
-│   google_news_scraping.ipynb
-│   metrics_model_evaluation.ipynb
-│   pytrend.ipynb
 │   README.md
 │   requirements.txt
-│   scope_labelling.ipynb
-│   scrap_n_zip.ipynb
 │   streamlit_demo.py
 │   streamlit_pytrends.py
 │   streamlit_utils.py
@@ -43,8 +35,14 @@ streamlit run streamlit_demo.py
 ├───chromedriver_win32
 │       chromedriver.exe
 │
-├───html_maps
-│       heatmap.html
+├───data
+│       scope_dataset_Lucas_Flood_2019.csv
+│       scope_dataset_Lucas_Hurricane_2015.csv
+│       scope_dataset_Lucas_Hurricane_2021.csv
+│       scope_dataset_Lucas_Tsunami_2018.csv
+│       scope_dataset_Lucas_Wildfire_2015.csv
+│       scope_dataset_Lucas_Wildfire_2016.csv
+│       Wildfire_test.zip
 │
 ├───legacy
 │       bs4_scraping.ipynb
@@ -58,6 +56,17 @@ streamlit run streamlit_demo.py
 │
 ├───model
 │       longformer_finetuned
+│
+└───notebooks
+│       articles_timeseries.ipynb
+│       BERT_QA.ipynb
+│       classify_relevance.ipynb
+│       fine_tuning_NER.ipynb
+│       google_news_scraping.ipynb
+│       metrics_model_evaluation.ipynb
+│       pytrend.ipynb
+│       scope_labelling.ipynb
+│       scrap_n_zip.ipynb
 ```
 
 ## :world_map: Roadmap
