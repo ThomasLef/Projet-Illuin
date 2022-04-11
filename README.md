@@ -10,19 +10,19 @@ Projet de dominante Infonum CentraleSupélec en collaboration avec Illuin Techno
 <p align="center"> <img src="https://www.pressonline.com/illuin-technology/files/2019/08/xlogo-illuin-technology.png.pagespeed.ic.P4glNQKPUa.png", width = 500/></p>
 
 ## Installation
-### Download requirements and model
+### Téléchargement, requirements & model
 
 ```bash
 $ pip install -r requirements.txt
 ```
 
-For the model we made a WeTransfer link : https://we.tl/t-4BRXsc3hLV. If the link is not available anymore, you can send an e-mail to wallerand.peugeot@student-cs.fr.
+Pour le modèle nous avons fait un lien WeTransfer : https://we.tl/t-4BRXsc3hLV. Si le lien n'est plus valable, veuillez envoyer un mail à l'adresse suivante : wallerand.peugeot@student-cs.fr.
 
-In order to make the scraper work you will need to have a chromedriver that should be adapted to your chrome version. Here is a link where you can download chromedriver : https://chromedriver.chromium.org/downloads.
+Pour que le scraper web fonctionne, il faut avoir un chromedriver adapté à votre version de chrome. Voici un lien vers lequel diverses versions de chromedriver sont disponibles : https://chromedriver.chromium.org/downloads.
 
 ## Usage
 
-To open the web page, please run the following code
+Pour ouvrir la page web correspondant à l'outils développé, lancer la ligne de code suivante :
 
 ```bash
 streamlit run streamlit_demo.py
@@ -54,7 +54,7 @@ streamlit run streamlit_demo.py
 ├───model
 │       longformer_finetuned
 │
-└───notebooks
+├───notebooks
 │       articles_timeseries.ipynb
 │       BERT_QA.ipynb
 │       classify_relevance.ipynb
