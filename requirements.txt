@@ -1,4 +1,4 @@
-beautifulsoup4==4.11.0
+beautifulsoup4==4.11.1
 deep_translator==1.8.3
 folium==0.12.1.post1
 geopy==2.2.0
