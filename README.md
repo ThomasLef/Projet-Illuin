@@ -3,6 +3,12 @@
 [![Open in Visual Studio Code](https://img.shields.io/badge/Editor-VSCode-blue?style=flat-square&logo=visual-studio-code&logoColor=white)](https://github.dev/ThomasLef/Projet-Illuin) 
 
 Projet de dominante Infonum CentraleSupélec en collaboration avec Illuin Technology.
+
+<p align="center"> <img src="https://upload.wikimedia.org/wikipedia/fr/thumb/8/86/Logo_CentraleSup%C3%A9lec.svg/800px-Logo_CentraleSup%C3%A9lec.svg.png", width = 500/></p>
+
+
+<p align="center"> <img src="https://www.pressonline.com/illuin-technology/files/2019/08/xlogo-illuin-technology.png.pagespeed.ic.P4glNQKPUa.png", width = 500/></p>
+
 ## Installation
 ### Download requirements and model
 
@@ -24,7 +30,7 @@ streamlit run streamlit_demo.py
 
 ## :package: Structure
 ```bash
-C:.
+.
 │   .gitignore
 │   README.md
 │   requirements.txt
