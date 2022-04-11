@@ -12,6 +12,8 @@ Projet de dominante Infonum CentraleSupélec en collaboration avec Illuin Techno
 ## Installation
 ### Téléchargement, requirements & model
 
+Pour installer les modules python requis, lancer la ligne de code suivante :
+
 ```bash
 $ pip install -r requirements.txt
 ```
@@ -20,9 +22,9 @@ Pour le modèle nous avons fait un lien WeTransfer : https://we.tl/t-4BRXsc3hLV.
 
 Pour que le scraper web fonctionne, il faut avoir un chromedriver adapté à votre version de chrome. Voici un lien vers lequel diverses versions de chromedriver sont disponibles : https://chromedriver.chromium.org/downloads.
 
-## Usage
+## Utilisation
 
-Pour ouvrir la page web correspondant à l'outils développé, lancer la ligne de code suivante :
+Pour ouvrir la page web Streamlit correspondante à l'outil développé, lancer la ligne de code suivante :
 
 ```bash
 streamlit run streamlit_demo.py
@@ -80,9 +82,51 @@ Les dossiers chromedriver_win32 ainsi que model contiennent les éléments décr
 
 - Step 5 (Avril) : Finaliser les tâches en cours - Identifier les potentiels next steps - Formaliser la présentation du travail réalisé sur l’année
 
+## Divers liens et ressources utilisés lors de ce projet
+
+### Bases du NER
+
+- A comprehensive guide to information extraction : https://www.analyticsvidhya.com/blog/2020/06/nlp-project-information-extraction/ 
+
+- Extraction de lieux : https://medium.com/spatial-data-science/how-to-extract-locations-from-text-with-natural-language-processing-9b77035b3ea4
+
+### Fine tuning de NER  
+
+- https://towardsdatascience.com/easy-fine-tuning-of-transformers-for-named-entity-recognition-d72f2b5340e3 (utilise un module python nommé NERDA pour fine tuner des modèles transformer de pytorch ou hugginface) l’architecture utilisée est similaire à celle de cet article : http://www.lrec-conf.org/proceedings/lrec2020/pdf/2020.lrec-1.565.pdf
+
+- https://towardsdatascience.com/custom-named-entity-recognition-using-spacy-7140ebbb3718 (crée un modèle de NER custom avec spaCy)
+
+###  Question answering
+
+- Adversarial SQUAD (Stanford Question Answering Dataset) : https://web.stanford.edu/class/archive/cs/cs224n/cs224n.1184/reports/6908723.pdf
+
+- Would it really be possible to have a single model that could do custom NER and QA on the same data? Can T5 save the day? : https://towardsdatascience.com/would-it-really-be-possible-to-have-a-single-model-that-could-do-custom-ner-and-qa-on-the-same-data-94432f12ff52
+ 
+- A Comparative Study of Transformer-Based Language Models on Extractive Question Answering : https://arxiv.org/pdf/2110.03142.pdf 
+
+
+- Deep Learning has (almost) all the answers: Yes/No Question Answering with Transformers : https://medium.com/illuin/deep-learning-has-almost-all-the-answers-yes-no-question-answering-with-transformers-223bebb70189
 
 
 
+### Score de pertinence
+
+- Matrice de confusion : https://likeabot.io/blog/chatbot-nlp-nlu-comment-evaluer-performance (calcul des faux positifs, etc..)
+
+- Sur la qualité des articles : https://blog.travelpayouts.com/en/how-to-check-an-article-quality/ - https://library.weber.edu/sites/default/files/PDFs/researchandteaching/libs1704/textbook/source_evaluation.pdf
+
+
+### Classification In-Scope Hors-Scope
+- https://jesusleal.io/2020/11/24/Longformer-with-IMDB/ (Longformer)
+
+- https://towardsdatascience.com/text-classification-with-bert-in-pytorch-887965e5820f (BERT)
+
+- https://medium.com/gumgum-tech/handling-class-imbalance-by-introducing-sample-weighting-in-the-loss-function-3bdebd8203b4 (weights in loss for imbalanced data)
+
+
+### Analyse tendance - Série temporelle
+
+- https://ichi.pro/fr/introduction-aux-series-temporelles-decomposition-des-tendances-avec-python-199330136383544 
 
 
 
