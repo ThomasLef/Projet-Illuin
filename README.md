@@ -43,6 +43,8 @@ streamlit run streamlit_demo.py
 ├───chromedriver_win32
 │       chromedriver.exe
 │
+├───html_maps
+│
 ├───legacy
 │       bs4_scraping.ipynb
 │       bs4_scraping.py
