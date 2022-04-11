@@ -132,3 +132,4 @@ dmypy.json
 data/
 legacy/ 
 chromedriver_win32/
+model/
