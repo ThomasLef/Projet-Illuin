@@ -69,7 +69,7 @@ def get_lists_from_subject(subject, num_pages,date_limits = None):
         cal = pdt.Calendar()
         now = datetime.now()
 
-        PATH = "./chromedriver_win32/chromedriver.exe"
+        PATH = "./chromedriver_linux64/chromedriver"
 
         s=Service(PATH)
         driver = webdriver.Chrome(service=s)

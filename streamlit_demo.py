@@ -100,7 +100,7 @@ def update_df():
 
 def load_model_tokenizer():
     st.session_state.tokenizer = LongformerTokenizer.from_pretrained("allenai/longformer-base-4096")
-    st.session_state.model = torch.load('model/longformer_finetuned').to('cpu')
+    st.session_state.model = torch.load('model/longformer_finetuned', map_location=torch.device('cpu')).to('cpu')
 
 if st.session_state.tokenizer is None or st.session_state.model is None:
     load_model_tokenizer()
