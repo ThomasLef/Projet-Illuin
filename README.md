@@ -41,15 +41,6 @@ streamlit run streamlit_demo.py
 ├───chromedriver_win32
 │       chromedriver.exe
 │
-├───data
-│       scope_dataset_Lucas_Flood_2019.csv
-│       scope_dataset_Lucas_Hurricane_2015.csv
-│       scope_dataset_Lucas_Hurricane_2021.csv
-│       scope_dataset_Lucas_Tsunami_2018.csv
-│       scope_dataset_Lucas_Wildfire_2015.csv
-│       scope_dataset_Lucas_Wildfire_2016.csv
-│       Wildfire_test.zip
-│
 ├───legacy
 │       bs4_scraping.ipynb
 │       bs4_scraping.py
@@ -74,7 +65,9 @@ streamlit run streamlit_demo.py
 │       scope_labelling.ipynb
 │       scrap_n_zip.ipynb
 ```
+Le dossier legacy regroupe un ensemble de tests que nous avions effectués, notamment au niveau du scraping web, mais qui ne se révèlent pas nécesasirement utiles pour la construction du projet en lui même. 
 
+Les dossiers chromedriver_win32 ainsi que model contiennent les éléments décrits dans la partie installation.
 ## :world_map: Roadmap
 
 - Step 1 (Novembre / Décembre) : Explorer et cadrer le sujet du projet - Benchmarker les outils de scraping - Sélectionner les 1ers sujets climatiques et les 1ères sources
