@@ -74,10 +74,7 @@ def show_results():
 
 def show_trends():
     st.session_state.display_trends = True
-    try :
-        update_trends()
-    except:
-        pass
+    update_trends()
     st.session_state.trend = trend_fig(st.session_state.pytrends, topic)
     st.session_state.fft = fft_fig(*freq_pos(st.session_state.pytrends, topic, nb_years))
     st.session_state.nb_ppy = nb_peaks_per_year(*freq_pos(st.session_state.pytrends, topic, nb_years))
