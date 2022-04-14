@@ -36,11 +36,21 @@ import parsedatetime as pdt
 import plotly.express as px
 
 from transformers import BertForSequenceClassification, LongformerTokenizer, LongformerForSequenceClassification
+from transformers import BertForQuestionAnswering
+from transformers import BertTokenizer
+
 from torch import nn
 import torch
 
 NLP_SENTENCES = English()
 NLP_SENTENCES.add_pipe('sentencizer') 
+
+#Model
+model = BertForQuestionAnswering.from_pretrained('bert-large-uncased-whole-word-masking-finetuned-squad')
+
+#Tokenizer
+tokenizer = BertTokenizer.from_pretrained('bert-large-uncased-whole-word-masking-finetuned-squad')
+
 
 def classify_relevance(article, model, tokenizer):
     #Article is a string, containing the text of the article
@@ -314,3 +324,102 @@ def plot_articles_per_date(df_location):
     df_temp = pd.DataFrame({"Date" : dateList, "Count": countList})
     return px.line(df_temp, x= "Date", y = "Count", title = "Number of scraped articles per date")
     
+def tokenize_input_text(question, input_text):
+
+    input_ids = tokenizer.encode(question, input_text)
+
+    return input_ids
+
+def tokenize_input_text(question, input_text):
+
+    input_ids = tokenizer.encode(question, input_text)
+
+    return input_ids
+
+def get_segment_ids(input_ids):
+    # Search the input_ids for the first instance of the `[SEP]` token.
+    sep_index = input_ids.index(tokenizer.sep_token_id)
+
+    # The number of segment A tokens includes the [SEP] token istelf.
+    num_seg_a = sep_index + 1
+
+    # The remainder are segment B.
+    num_seg_b = len(input_ids) - num_seg_a
+
+    # Construct the list of 0s and 1s.
+    segment_ids = [0]*num_seg_a + [1]*num_seg_b
+
+    # There should be a segment_id for every input token.
+    assert len(segment_ids) == len(input_ids)
+
+    return segment_ids
+
+def get_scores(input_ids,segment_ids):
+    # Run through the model.
+    start_scores, end_scores = model(torch.tensor([input_ids]), # The tokens representing our input text.
+                                    token_type_ids=torch.tensor([segment_ids]),
+                                    return_dict = False) # The segment IDs to differentiate question from answer_text
+    return start_scores, end_scores
+
+# Find the tokens with the highest `start` and `end` scores.
+def get_answer(start_scores,end_scores, input_ids):
+    answer_start = torch.argmax(start_scores)
+    answer_end = torch.argmax(end_scores)
+
+    # Combine the tokens in the answer and print it out.
+    tokens = tokenizer.convert_ids_to_tokens(input_ids)
+    answer = ' '.join(tokens[answer_start:answer_end+1])
+
+    return answer
+
+# Better version
+
+def get_answer_clean(start_scores, end_scores, input_ids):
+    answer_start = torch.argmax(start_scores)
+    answer_end = torch.argmax(end_scores)
+    tokens = tokenizer.convert_ids_to_tokens(input_ids)
+    answer = tokens[answer_start]
+
+    # Select the remaining answer tokens and join them with whitespace.
+    for i in range(answer_start + 1, answer_end + 1):
+        
+        # If it's a subword token, then recombine it with the previous token.
+        if tokens[i][0:2] == '##':
+            answer += tokens[i][2:]
+        
+        # Otherwise, add a space then the token.
+        else:
+            answer += ' ' + tokens[i]
+    return answer
+
+def answer_from_question(question, input_text):
+    input_ids = tokenize_input_text(question, input_text)
+    segment_ids = get_segment_ids(input_ids)
+    start_scores, end_scores = get_scores(input_ids, segment_ids)
+
+    res = get_answer_clean(start_scores, end_scores, input_ids)
+
+    if '[CLS]' in res:
+        return "No answer found"    
+    return res
+
+def get_first_senteces_from_sentences_list(sentences_list, nb_sentences):
+    return "".join(sentences_list[0:nb_sentences])
+
+def add_QA_location_to_df(df_location, subject, nb_sentences=5):
+    question = "Where did the " + subject + " occur?"
+    df_location["QA_location"] = None
+    df_location["QA_location"] = df_location["Sentences"].apply(lambda x : answer_from_question(question, get_first_senteces_from_sentences_list(x,nb_sentences)))
+    return df_location
+
+def add_QA_impact_to_df(df_location, subject, nb_sentences=5):
+    question = "What were the impact of the " + subject + " ?"
+    df_location["QA_impact"] = None
+    df_location["QA_impact"] = df_location["Sentences"].apply(lambda x : answer_from_question(question, get_first_senteces_from_sentences_list(x,nb_sentences)))
+    return df_location
+
+def add_QA_cause_to_df(df_location, subject, nb_sentences=5):
+    question = "What caused the " + subject + " ?"
+    df_location["QA_cause"] = None
+    df_location["QA_cause"] = df_location["Sentences"].apply(lambda x : answer_from_question(question, get_first_senteces_from_sentences_list(x,nb_sentences)))
+    return df_location
