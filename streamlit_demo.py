@@ -149,7 +149,11 @@ if search_type == SEARCH_TYPE[0]: #Scraping
     if st.session_state.display:
         
         
-        st.session_state.df_location
+        st.write(st.session_state.df_location)
+
+        c1, c2 = st.columns(2)
+        c1.write(add_QA_impact_to_df(st.session_state.df_location, subject)["QA_impact"])
+        c2.write(add_QA_cause_to_df(st.session_state.df_location, subject)["QA_cause"])
 
         if st.session_state.show_plot_articles_per_date:
             
